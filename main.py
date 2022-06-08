@@ -3,8 +3,9 @@ from enum import unique
 from urllib import response
 from black import out
 from flask import Flask, Response, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from models import User, Chats, Contact
+from db import db_init
 
 
 app = Flask(__name__)
@@ -12,35 +13,7 @@ CORS(app)
 # api_conf = {"origins": ["http://localhost:5000"], "method": ["GET"]}
 cors = CORS(app, resources={r"*": {"origin": "*"}})
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data1.db"
-
-db = SQLAlchemy(app)
-
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True)
-
-    def __repr__(self):
-        return f"{self.id}:{self.name}"
-
-
-class Contact(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=False)
-    key = db.Column(db.Integer)
-
-    def __repr__(self):
-        return f"{self.id}:{self.name}:{self.key}"
-
-
-class Chats(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    chat_time = db.Column(db.String(80), unique=False)
-    key = db.Column(db.Integer)
-    text = db.Column(db.String(120))
-
-    def __repr__(self):
-        return f"{self.id}:{self.chat_time}:{self.text}:{self.key}"
+db_init(app)
 
 
 @app.route("/")
