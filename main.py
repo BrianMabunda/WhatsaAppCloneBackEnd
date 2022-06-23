@@ -157,18 +157,33 @@ def getPic():
 def get(names, keys):
     keys = extract(keys, 1)
     names = extract(names, 0)
-    print(names)
-    print(keys)
     output = []
     Data = Image.query.all()
+    image_list = []
+    print(len(keys))
     for i in range(len(keys)):
+        print(i)
         for data in Data:
             if data.key == keys[i]:
-                print("True")
-                print(data.key, keys[i])
-                output.append(
-                    {"id": data.id, "name": names[i], "key": keys[i], "image": data.img}
-                )
+                if len(image_list) == 0:
+                    image_list.append(data.img)
+                    output.append(
+                        {
+                            "id": data.id,
+                            "name": names[i],
+                            "key": keys[i],
+                            "images": image_list,
+                        }
+                    )
+                else:
+                    # output[i - 1]["images"].append(data.img)
+                    try:
+                        image_list.append(data.img)
+                        # output[i]["images"]. "X"
+                        print(output[i]["images"])
+                    except:
+                        pass
             else:
                 pass
-    return {"Image": output}
+        image_list = []
+    return jsonify({"Image": output})
